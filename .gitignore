@@ -1,0 +1,36 @@
+venv/
+env/
+.venv/
+.virtualenv/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.env
+.env.*
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+.DS_Store
+Thumbs.db
+
+*.log
+
+*.sqlite3
+*.db
+
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ===============================
+# Migrations (optional)
+# Uncomment if using Alembic and
+# you don't want to commit migrations
+# ===============================
+# ale
