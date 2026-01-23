@@ -26,3 +26,13 @@ def generate_group_rl_from_db(db: Session):
 
     group, reward = generate_group_rl(member_dicts)
     return group, reward
+
+def create_members_bulk(db: Session, members: list[MemberCreate]):
+    db_members = [
+        Member(name=m.name, category=m.category)
+        for m in members
+    ]
+
+    db.add_all(db_members)
+    db.commit()
+    return db_members

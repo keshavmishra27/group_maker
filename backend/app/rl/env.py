@@ -46,8 +46,12 @@ class GroupEnv:
             return -2
 
         reward = 0
-        reward += 2 if s["senior"] >= 1 else -2
-        reward += 2 if s["intermediate"] >= 1 else -2
-        reward += 1 if s["junior"] >= 1 else 0
+        reward += 2 if s["senior"] >= 1 else -reward
+        reward += 2 if s["intermediate"] >= 1 else -reward
+        reward += 2 if s["junior"] >= 1 else -reward
 
-        return reward
+        if reward == 0:
+            return "made group successfully"
+        
+        else:
+            return "failed to make group kindly try again on hitting generate group btn"

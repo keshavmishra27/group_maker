@@ -6,4 +6,4 @@ class Member(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    category = Column(String, nullable=False)  # junior | intermediate | senior
+    category = Column(String, nullable=False) 

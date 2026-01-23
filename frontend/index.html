@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Society Group Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<body>
+
+<!-- Three.js background canvas -->
+<canvas id="bg"></canvas>
+
+<div class="app">
+
+    <header>
+        <h1>Tech Society Group Generator</h1>
+        <p>Balanced teams using intelligent selection</p>
+    </header>
+
+    <div class="actions">
+        <button onclick="fetchMembers()">View Members</button>
+        <button class="primary" onclick="generateGroup()">Generate Group</button>
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <h2>Members Pool</h2>
+            <ul id="members"></ul>
+        </div>
+
+        <div class="card highlight">
+            <h2>Generated Group</h2>
+            <ul id="group"></ul>
+            <p id="reward" class="reward"></p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Libraries FIRST -->
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<!-- Background -->
+<script src="three-bg.js"></script>
+
+<!-- UI animations -->
+<script src="ui-animations.js"></script>
+
+<!-- App logic -->
+<script src="script.js"></script>
+
+</body>
+</html>
