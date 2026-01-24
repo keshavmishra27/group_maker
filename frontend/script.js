@@ -77,45 +77,42 @@ async function generateGroup() {
 
 
 async function generateAllGroups() {
-    const groupContainer = document.getElementById("group");
-    const rewardText = document.getElementById("reward");
+    const container = document.getElementById("group");
+    container.innerHTML = "<p>Generating all groups...</p>";
 
-    groupContainer.innerHTML = "";
-    rewardText.textContent = "Generating all groups…";
-
-    const res = await fetch(`${API}/groups/generate-all`);
+    const res = await fetch("http://127.0.0.1:8000/groups/generate-all");
     const data = await res.json();
 
-    groupContainer.innerHTML = "";
+    console.log("API RESPONSE:", data); // keep for sanity
 
-    data.groups.forEach((grp, gIndex) => {
-        const title = document.createElement("li");
-        title.innerHTML = `<strong>Group ${gIndex + 1} (Reward: ${grp.reward})</strong>`;
-        title.style.marginTop = "12px";
-        groupContainer.appendChild(title);
+    container.innerHTML = "";
 
-        grp.members.forEach((m, index) => {
+    if (!data.groups || !data.groups.length) {
+        container.innerHTML = "<p>No groups generated.</p>";
+        return;
+    }
+
+    data.groups.forEach((g, index) => {
+        const groupTitle = document.createElement("h4");
+        groupTitle.textContent = `Group ${g.group_id} (Reward: ${g.reward})`;
+        container.appendChild(groupTitle);
+
+        const ul = document.createElement("ul");
+
+        g.group.forEach(member => {
             const li = document.createElement("li");
-            li.textContent = `${m.name} (${m.category})`;
-            li.style.opacity = 0;
-            li.style.marginLeft = "12px";
-
-            groupContainer.appendChild(li);
-
-            anime({
-                targets: li,
-                opacity: [0, 1],
-                translateX: [-15, 0],
-                delay: (gIndex * 300) + (index * 80),
-                duration: 500,
-                easing: "easeOutQuad"
-            });
+            li.textContent = `${member.name} (${member.category})`;
+            ul.appendChild(li);
         });
+
+        container.appendChild(ul);
     });
 
-    rewardText.textContent = `Total Groups Generated: ${data.total_groups}`;
-
-    if (window.pulseSuccess) {
-        window.pulseSuccess();
-    }
+    const summary = document.createElement("p");
+    summary.innerHTML = `
+        <strong>Total Groups:</strong> ${data.total_groups}<br>
+        <strong>Students Used:</strong> ${data.students_used}
+    `;
+    container.appendChild(summary);
 }
+

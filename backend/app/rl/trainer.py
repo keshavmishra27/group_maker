@@ -14,50 +14,34 @@ def generate_group_rl(members):
         if done:
             return env.group, reward
 
-def generate_all_groups_rl(members):
-    unassigned = members.copy()
-    all_groups = []
-    replay_buffer = []
+def generate_all_groups_deterministic(members):
+    seniors = [m for m in members if m["category"] == "senior"]
+    intermediates = [m for m in members if m["category"] == "intermediate"]
+    juniors = [m for m in members if m["category"] == "junior"]
 
-    while len(unassigned) >= 3:
-        env = GroupEnv(unassigned)
-        agent = SimpleRLAgent()
+    groups = []
+    group_id = 1
 
-        state = env.reset()
-
-        MAX_STEPS = 10
-        steps = 0
-        group = []
-
-        while True:
-            action = agent.select_action(state)
-            state, reward, done = env.step(action)
-            steps += 1
-
-            if done or steps >= MAX_STEPS:
-                group = env.group
-                break
-
-        # 🔒 SAFETY: no progress → exit outer loop
-        if not group:
-            break
-
-        replay_buffer.append({
-            "group": group,
-            "reward": reward
-        })
-
-        all_groups.append({
-            "group": group,
-            "reward": reward
-        })
-
-        used_ids = {m["id"] for m in group}
-        unassigned = [
-            m for m in unassigned
-            if m["id"] not in used_ids
+    while seniors and intermediates and juniors:
+        group = [
+            seniors.pop(0),
+            intermediates.pop(0),
+            juniors.pop(0),
         ]
 
-    return all_groups, replay_buffer
+        # Optional: add one more intermediate if available
+        if intermediates:
+            group.append(intermediates.pop(0))
+
+        groups.append({
+            "group_id": group_id,
+            "group": group,
+            "reward": 6
+        })
+        group_id += 1
+
+    return groups
+
+
 
 
