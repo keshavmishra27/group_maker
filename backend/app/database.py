@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # DATABASE_URL = "postgresql://postgres:kshu086@localhost/tech_society"# here in teh end mention db not server name
+#above one is for localhost
 DATABASE_URL="postgresql://postgres:kshumayak086@db.vwmssqfdfovwxzydxvwv.supabase.co:5432/postgres"
 engine = create_engine(DATABASE_URL)
 

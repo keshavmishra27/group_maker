@@ -5,11 +5,9 @@
     <title>Tech Society Group Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
 <body>
 
-<!-- Three.js background canvas -->
 <canvas id="bg"></canvas>
 
 <div class="app">
@@ -20,9 +18,11 @@
     </header>
 
     <div class="actions">
-        <button onclick="fetchMembers()">View Members</button>
-        <button class="primary" onclick="generateGroup()">Generate Group</button>
-    </div>
+    <button onclick="fetchMembers()">View Members</button>
+    <button onclick="generateGroup()">Generate One Group</button>
+    <button class="primary" onclick="generateAllGroups()">Generate All Groups</button>
+</div>
+
 
     <div class="grid">
 
@@ -41,17 +41,17 @@
 
 </div>
 
-<!-- Libraries FIRST -->
+
 <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-<!-- Background -->
+
 <script src="three-bg.js"></script>
 
-<!-- UI animations -->
+
 <script src="ui-animations.js"></script>
 
-<!-- App logic -->
+
 <script src="script.js"></script>
 
 </body>

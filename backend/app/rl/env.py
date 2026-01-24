@@ -55,3 +55,17 @@ class GroupEnv:
         
         else:
             return "failed to make group kindly try again on hitting generate group btn"
+
+    
+    def compute_reward(group):
+        roles = [m.category for m in group]
+
+        reward = 0
+        if "senior" in roles:
+            reward += 3
+        if "intermediate" in roles:
+            reward += 2
+        if "junior" in roles:
+            reward += 1
+
+        return reward
