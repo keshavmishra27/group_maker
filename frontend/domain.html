@@ -2,56 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tech Society Group Generator</title>
+  <title>Tech Society - View Members</title>
   <link rel="stylesheet" href="style_domain.css" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 
 <body>
-
   <canvas id="bg"></canvas>
 
   <div id="ui" class="app">
     <header class="top-bar">
-  <button class="home-btn" onclick="goHome()"> Home</button>
-
-  <div class="title">
-    <h1>Tech Society Group Generator</h1>
-    <p>Balanced teams using intelligent selection</p>
-  </div>
-</header>
-
+      <button class="home-btn" onclick="goHome()">Home</button>
+      <div class="title">
+        <h1>Domain Details</h1>
+      </div>
+    </header>
 
     <div class="actions">
-  <button class="btn fetchMembers" onclick="fetchMembers()">View Members</button>
-<button class="btn generateGroup" onclick="generateGroup()">Generate One Group</button>
-<button class="btn generateAllGroups" onclick="generateAllGroups()">Generate All Groups</button>
-
+      <button type="button" class="btn fetchMembers" onclick="fetchMembers()">View Members</button>
     </div>
 
     <div class="grid">
-      <div class="card">
-  <h2>Members Pool</h2>
-  <ul id="members"></ul>
-</div>
-
-<div class="card highlight">
-  <h2>Generated Group</h2>
-  <p id="reward"></p>
-  <ul id="group"></ul>
-</div>
-
+      <div class="card" id="members-container" style="width: 100%; min-height: 200px;">
+        <p style="color: #64748b; text-align: center;">Click "View Members" to load data...</p>
+      </div>
     </div>
   </div>
 
   <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
   <script src="three-bg.js"></script>
+  
   <script src="ui-animations.js"></script>
-  <script src="script.js"></script>
+  
+  <script src="script.js?v=6"></script>
+  
   <script>
-  function goHome() {
-    window.location.href = "index.html";
-  }
-</script>
-
+    function goHome() {
+      window.location.href = "index.html";
+    }
+  </script>
 </body>
 </html>

@@ -1,18 +1,34 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from collections import defaultdict
+from typing import Optional
 from backend.app.database import get_db
-from backend.app.models import Member
+from backend.app.models import Member, Domain
 from backend.app.rl.trainer import generate_all_groups_deterministic
-from backend.app.models import Domain
 
 router = APIRouter(prefix="/groups", tags=["Groups"])
 
-
 @router.get("/generate")
-def generate_group(db: Session = Depends(get_db)):
+def generate_group(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
     from backend.app.rl.trainer import generate_group_rl_from_db
-    group, reward = generate_group_rl_from_db(db)
+    
+    # Validation logic moved here to avoid double-fetching in the trainer
+    if domain_id:
+        domain = db.query(Domain).filter(Domain.id == domain_id).first()
+        if not domain:
+            return {"error": "Domain not found", "members": [], "reward": 0}
+        
+        # Check count here before passing to RL
+        if len(domain.members) < 3:
+            return {"error": "Not enough members in this domain (need 3+)", "members": [], "reward": 0}
+
+    # Call the RL function
+    # Note: Ensure generate_group_rl_from_db handles the case where domain_id is None
+    group, reward = generate_group_rl_from_db(db, domain_id=domain_id)
+    
+    # Handle failure case from RL (e.g. if it couldn't find a valid group)
+    if not group:
+         return {"error": "Could not form a valid group", "members": [], "reward": 0}
+
     return {
         "reward": reward,
         "members": group
@@ -20,11 +36,21 @@ def generate_group(db: Session = Depends(get_db)):
 
 
 @router.get("/generate-all")
-def generate_all_groups(db: Session = Depends(get_db)):
-    domains = db.query(Domain).all()
+def generate_all_groups(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
+    if domain_id:
+        # Generate groups for a single domain
+        domain = db.query(Domain).filter(Domain.id == domain_id).first()
+        if not domain:
+            return {"error": "Domain not found"} 
+        domains = [domain]
+    else:
+        # Generate groups for all domains
+        domains = db.query(Domain).all()
+    
     response = []
 
     for domain in domains:
+        # Convert DB models to dictionary format expected by the algorithm
         members_data = [
             {
                 "id": m.id,
@@ -34,16 +60,20 @@ def generate_all_groups(db: Session = Depends(get_db)):
             for m in domain.members
         ]
 
+        # Skip domains with too few members
         if len(members_data) < 3:
             continue
 
+        # Use the deterministic greedy algorithm for bulk generation
         groups = generate_all_groups_deterministic(members_data)
 
-        response.append({
-            "domain": domain.name,
-            "total_students": len(members_data),
-            "total_groups": len(groups),
-            "groups": groups
-        })
+        if groups:
+            response.append({
+                "domain": domain.name,
+                "domain_id": domain.id,
+                "total_students": len(members_data),
+                "total_groups": len(groups),
+                "groups": groups
+            })
 
     return response

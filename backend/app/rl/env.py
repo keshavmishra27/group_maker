@@ -1,3 +1,4 @@
+# env.py
 import random
 
 class GroupEnv:
@@ -19,55 +20,52 @@ class GroupEnv:
         }
 
     def step(self, action):
-        reward = 0
-
-        if action == 3:  # STOP
+        # Action 3: STOP
+        if action == 3: 
             self.done = True
             return self._state(), self._evaluate(), self.done
 
-        category = ["senior", "intermediate", "junior"][action]
-        candidates = [m for m in self.members if m["category"] == category]
+        category_map = ["senior", "intermediate", "junior"]
+        
+        # Safety check for invalid action
+        if action >= len(category_map):
+             return self._state(), -1, False
+             
+        category = category_map[action]
 
-        if not candidates or len(self.group) >= 5:
-            return self._state(), -1, False
+        # ✅ FIX: Filter out members who are ALREADY in the group
+        # We use m["id"] to ensure uniqueness if dicts are recreated
+        current_ids = {g["id"] for g in self.group}
+        candidates = [
+            m for m in self.members 
+            if m["category"] == category and m["id"] not in current_ids
+        ]
 
+        # If no candidates available for this category (or all used), punish agent
+        if not candidates:
+            return self._state(), -1, False 
+
+        # Add member
         self.group.append(random.choice(candidates))
 
+        # Check if group is full (max 5)
         if len(self.group) >= 5:
             self.done = True
             reward = self._evaluate()
+            return self._state(), reward, self.done
 
-        return self._state(), reward, self.done
+        return self._state(), 0, self.done
 
     def _evaluate(self):
         s = self._state()
 
+        # Constraints: Group must be between 3 and 5 members
         if s["group_size"] < 3 or s["group_size"] > 5:
             return -2
 
         reward = 0
-
-        if s["senior"] >= 1:
-            reward += 3
-        if s["intermediate"] >= 1:
-            reward += 2
-        if s["junior"] >= 1:
-            reward += 1
-
-        return reward
-
-
-
-    
-    def compute_reward(group):
-        roles = [m.category for m in group]
-
-        reward = 0
-        if "senior" in roles:
-            reward += 3
-        if "intermediate" in roles:
-            reward += 2
-        if "junior" in roles:
-            reward += 1
+        if s["senior"] >= 1: reward += 3
+        if s["intermediate"] >= 1: reward += 2
+        if s["junior"] >= 1: reward += 1
 
         return reward

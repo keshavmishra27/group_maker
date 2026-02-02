@@ -52,10 +52,18 @@ def generate_all_groups_deterministic(members):
     return groups
 
 
-def generate_group_rl_from_db(db):
-    from backend.app.models import Member
+def generate_group_rl_from_db(db, domain_id=None):
+    from backend.app.models import Member, Domain
 
-    members = db.query(Member).all()
+    if domain_id:
+        # Get members for specific domain
+        domain = db.query(Domain).filter(Domain.id == domain_id).first()
+        if not domain:
+            return [], 0
+        members = domain.members
+    else:
+        # Get all members
+        members = db.query(Member).all()
 
     members_data = [
         {

@@ -1,38 +1,49 @@
-    <head>
-  <meta charset="UTF-8" />
-  <title>Tech Society</title>
-
-  <link rel="stylesheet" href="style_home.css" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Society - Home</title>
+    <link rel="stylesheet" href="style_home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
+<body>
 
-    
-    <body>
     <canvas id="bg"></canvas>
 
-    <div class="home-overlay">
-        <h1>Tech Society</h1>
-        <p>Select your domain</p>
+    <div id="ui" class="app-container">
+        <header>
+            <h1>Tech Society Group Generator</h1>
+            <p>Select a domain to manage members and teams</p>
+        </header>
 
-        <select id="domainSelect">
-        <option value="web Development">web development</option>
-        <option value="app devolopment">app devolopment</option>
-        <option value="machine learning">machine learning</option>
-        <option value="agentic AI">agentic AI</option>
-        <option value="cloud computing">cloud computing</option>
-        <option value="cybersecurity">cybersecurity</option>
-        </select>
+        <div class="card-grid">
+            <button class="domain-btn" onclick="window.location.href='domain.html?domain_id=6&domain_name=Cybersecurity'">
+                <h2>Cybersecurity</h2>
+                <span class="btn-text">Manage Domain &rarr;</span>
+            </button>
 
-        <button onclick="enterDomain()">Enter</button>
+            <button class="domain-btn" onclick="window.location.href='domain.html?domain_id=5&domain_name=AI_ML'">
+                
+                <h2>AI / ML</h2>
+                <span class="btn-text">Manage Domain &rarr;</span>
+            </button>
+
+            <button class="domain-btn" onclick="window.location.href='domain.html?domain_id=1&domain_name=Web_Development'">
+                
+                <h2>Web Development</h2>
+                <span class="btn-text">Manage Domain &rarr;</span>
+            </button>
+            
+            <button class="domain-btn" onclick="window.location.href='domain.html?domain_id=2&domain_name=App_Development'">
+                
+                <h2>App Development</h2>
+                <span class="btn-text">Manage Domain &rarr;</span>
+            </button>
+        </div>
     </div>
 
     <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
-<script src="three-bg.js"></script>
-
-    <script>
-        function enterDomain() {
-        const domain = document.getElementById("domainSelect").value;
-        localStorage.setItem("domain", domain);
-        window.location.href = "domain.html";
-        }
-    </script>
-    </body>
+    <script src="three-bg.js"></script>
+</body>
+</html>

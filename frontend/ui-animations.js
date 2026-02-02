@@ -1,6 +1,6 @@
 anime({
     targets: '#ui',
-    opacity: [0, 1],
+    opacity: [0.5, 1],
     scale: [0.9, 1],
     duration: 1200,
     easing: 'easeOutExpo'

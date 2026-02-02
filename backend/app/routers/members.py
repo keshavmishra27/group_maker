@@ -1,25 +1,35 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..crud import create_member, create_members_bulk, get_all_members
-from ..schemas import MemberCreate, MemberResponse
+from typing import Optional
+from backend.app.database import get_db
+from backend.app.models import Member, Domain
 
 router = APIRouter(prefix="/members", tags=["Members"])
 
-@router.post("/", response_model=MemberResponse)
-def add_member(member: MemberCreate, db: Session = Depends(get_db)):
-    return create_member(db, member)
-
-@router.get("/", response_model=list[MemberResponse])
-def list_members(db: Session = Depends(get_db)):
-    return get_all_members(db)
-
-from ..schemas import MemberBulkCreate
-
-@router.post("/bulk", response_model=list[MemberResponse])
-def add_members_bulk(
-    payload: MemberBulkCreate,
-    db: Session = Depends(get_db)
-):
-    return create_members_bulk(db, payload.members)
-
+@router.get("/")
+def get_members(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
+    if domain_id:
+        # Get members for specific domain
+        domain = db.query(Domain).filter(Domain.id == domain_id).first()
+        if not domain:
+            return []
+        
+        return [
+            {
+                "id": m.id,
+                "name": m.name,
+                "category": m.category
+            }
+            for m in domain.members
+        ]
+    else:
+        # Get all members
+        members = db.query(Member).all()
+        return [
+            {
+                "id": m.id,
+                "name": m.name,
+                "category": m.category
+            }
+            for m in members
+        ]

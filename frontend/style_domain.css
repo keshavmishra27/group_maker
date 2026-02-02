@@ -7,6 +7,14 @@ html, body {
 }
 
 
+
+/* FORCE VISIBILITY */
+#ui *,
+#ui *::before,
+#ui *::after {
+  opacity: 1 !important;
+}
+
 #bg {
   position: fixed;
   inset: 0;
@@ -169,4 +177,20 @@ p, li {
 
 .app .grid .card:first-child ul li {
   opacity: 1;
+}
+
+/* List items styling */
+#members li,
+#group li {
+  color: #7dd3fc;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+  list-style: none;
+}
+
+#members,
+#group {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
