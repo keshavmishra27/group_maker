@@ -19,7 +19,6 @@ def generate_group_rl(members):
         if done:
             return env.group, reward
 
-    # fallback if agent is dumb
     return env.group, reward
 
 
@@ -56,13 +55,13 @@ def generate_group_rl_from_db(db, domain_id=None):
     from backend.app.models import Member, Domain
 
     if domain_id:
-        # Get members for specific domain
+        
         domain = db.query(Domain).filter(Domain.id == domain_id).first()
         if not domain:
             return [], 0
         members = domain.members
     else:
-        # Get all members
+        
         members = db.query(Member).all()
 
     members_data = [

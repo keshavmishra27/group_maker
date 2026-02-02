@@ -7,8 +7,6 @@ html, body {
 }
 
 
-
-/* FORCE VISIBILITY */
 #ui *,
 #ui *::before,
 #ui *::after {
@@ -83,7 +81,7 @@ p, li {
   color: #38bdf8;
 }
 
-/* Container */
+
 .actions {
   display: flex;
   gap: 14px;
@@ -91,7 +89,7 @@ p, li {
   flex-wrap: wrap;
 }
 
-/* Base button */
+
 .btn {
   position: relative;
   padding: 12px 22px;
@@ -111,7 +109,7 @@ p, li {
   overflow: hidden;
 }
 
-/* Glow layer */
+
 .btn::before {
   content: "";
   position: absolute;
@@ -136,12 +134,11 @@ p, li {
   opacity: 1;
 }
 
-/* Click */
+
 .btn:active {
   transform: scale(0.97);
 }
 
-/* Variants */
 .fetchMembers {
   border-color: rgba(59, 130, 246, 0.5);
   background-color:cadetblue;
@@ -179,7 +176,7 @@ p, li {
   opacity: 1;
 }
 
-/* List items styling */
+
 #members li,
 #group li {
   color: #7dd3fc;

@@ -9,7 +9,7 @@ router = APIRouter(prefix="/members", tags=["Members"])
 @router.get("/")
 def get_members(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
     if domain_id:
-        # Get members for specific domain
+        
         domain = db.query(Domain).filter(Domain.id == domain_id).first()
         if not domain:
             return []
@@ -23,7 +23,7 @@ def get_members(domain_id: Optional[int] = Query(None), db: Session = Depends(ge
             for m in domain.members
         ]
     else:
-        # Get all members
+        
         members = db.query(Member).all()
         return [
             {

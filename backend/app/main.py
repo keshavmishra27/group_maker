@@ -2,11 +2,10 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from backend.app.routers import members, groups
-from fastapi.middleware.cors import CORSMiddleware # <--- IMPORT THIS
+from fastapi.middleware.cors import CORSMiddleware 
 
 app = FastAPI()
 
-# --- ADD THIS SECTION ---
 origins = [
     "http://127.0.0.1:5500",    # VS Code Live Server default
     "http://localhost:5500",
@@ -24,13 +23,13 @@ app.add_middleware(
 app.include_router(members.router)
 app.include_router(groups.router)
 
-# Absolute path resolution (VERY IMPORTANT)
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
 
-print("Frontend dir:", FRONTEND_DIR)  # debug once
+print("Frontend dir:", FRONTEND_DIR)  
 
-# Mount frontend
+
 app.mount("/ui", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
 print(FRONTEND_DIR.exists())

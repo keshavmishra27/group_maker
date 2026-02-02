@@ -11,21 +11,19 @@ router = APIRouter(prefix="/groups", tags=["Groups"])
 def generate_group(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
     from backend.app.rl.trainer import generate_group_rl_from_db
     
-    # Validation logic moved here to avoid double-fetching in the trainer
+    
     if domain_id:
         domain = db.query(Domain).filter(Domain.id == domain_id).first()
         if not domain:
             return {"error": "Domain not found", "members": [], "reward": 0}
         
-        # Check count here before passing to RL
+        
         if len(domain.members) < 3:
             return {"error": "Not enough members in this domain (need 3+)", "members": [], "reward": 0}
 
-    # Call the RL function
-    # Note: Ensure generate_group_rl_from_db handles the case where domain_id is None
+    
     group, reward = generate_group_rl_from_db(db, domain_id=domain_id)
     
-    # Handle failure case from RL (e.g. if it couldn't find a valid group)
     if not group:
          return {"error": "Could not form a valid group", "members": [], "reward": 0}
 
@@ -38,19 +36,18 @@ def generate_group(domain_id: Optional[int] = Query(None), db: Session = Depends
 @router.get("/generate-all")
 def generate_all_groups(domain_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
     if domain_id:
-        # Generate groups for a single domain
+       
         domain = db.query(Domain).filter(Domain.id == domain_id).first()
         if not domain:
             return {"error": "Domain not found"} 
         domains = [domain]
     else:
-        # Generate groups for all domains
+        
         domains = db.query(Domain).all()
     
     response = []
 
     for domain in domains:
-        # Convert DB models to dictionary format expected by the algorithm
         members_data = [
             {
                 "id": m.id,
@@ -60,11 +57,10 @@ def generate_all_groups(domain_id: Optional[int] = Query(None), db: Session = De
             for m in domain.members
         ]
 
-        # Skip domains with too few members
+      
         if len(members_data) < 3:
             continue
 
-        # Use the deterministic greedy algorithm for bulk generation
         groups = generate_all_groups_deterministic(members_data)
 
         if groups:
