@@ -1,59 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tech Society Group Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <head>
+  <meta charset="UTF-8" />
+  <title>Tech Society</title>
+
+  <link rel="stylesheet" href="style_home.css" />
 </head>
 
-<body>
+    
+    <body>
+    <canvas id="bg"></canvas>
 
-<canvas id="bg"></canvas>
+    <div class="home-overlay">
+        <h1>Tech Society</h1>
+        <p>Select your domain</p>
 
-<div class="app">
+        <select id="domainSelect">
+        <option value="web Development">web development</option>
+        <option value="app devolopment">app devolopment</option>
+        <option value="machine learning">machine learning</option>
+        <option value="agentic AI">agentic AI</option>
+        <option value="cloud computing">cloud computing</option>
+        <option value="cybersecurity">cybersecurity</option>
+        </select>
 
-    <header>
-        <h1>Tech Society Group Generator</h1>
-        <p>Balanced teams using intelligent selection</p>
-    </header>
-
-    <div class="actions">
-    <button onclick="fetchMembers()">View Members</button>
-    <button onclick="generateGroup()">Generate One Group</button>
-    <button onclick="generateAllGroups()">Generate All Groups</button>
-
-</div>
-
-
-    <div class="grid">
-
-        <div class="card">
-            <h2>Members Pool</h2>
-            <ul id="members"></ul>
-        </div>
-
-        <div class="card highlight">
-            <h2>Generated Group</h2>
-            <ul id="group"></ul>
-            <p id="reward" class="reward"></p>
-        </div>
-
+        <button onclick="enterDomain()">Enter</button>
     </div>
 
-</div>
-
-
-<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-
-
+    <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
 <script src="three-bg.js"></script>
 
-
-<script src="ui-animations.js"></script>
-
-
-<script src="script.js"></script>
-
-</body>
-</html>
+    <script>
+        function enterDomain() {
+        const domain = document.getElementById("domainSelect").value;
+        localStorage.setItem("domain", domain);
+        window.location.href = "domain.html";
+        }
+    </script>
+    </body>

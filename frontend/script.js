@@ -6,18 +6,18 @@ async function fetchMembers() {
 
     if (window.startLoading) window.startLoading();
 
+    
     const res = await fetch(`${API}/members/`);
     const members = await res.json();
 
     members.forEach((m, index) => {
         const li = document.createElement("li");
         li.textContent = `${m.name} (${m.category})`;
-        li.style.opacity = 0;
         list.appendChild(li);
 
         anime({
             targets: li,
-            opacity: [0, 1],
+            opacity: [0.5,1],
             translateX: [-20, 0],
             delay: index * 30,
             duration: 500,
@@ -27,6 +27,8 @@ async function fetchMembers() {
 
     if (window.stopLoading) window.stopLoading();
 }
+
+
 
 async function generateGroup() {
     const list = document.getElementById("group");
@@ -45,12 +47,11 @@ async function generateGroup() {
     data.members.forEach((m, index) => {
         const li = document.createElement("li");
         li.textContent = `${m.name} (${m.category})`;
-        li.style.opacity = 0;
         list.appendChild(li);
 
         anime({
             targets: li,
-            opacity: [0, 1],
+            opacity:[0.5,1],
             scale: [0.9, 1],
             delay: index * 120,
             duration: 600,
@@ -60,7 +61,7 @@ async function generateGroup() {
 
     anime({
         targets: rewardText,
-        opacity: [0, 1],
+        opacity:[0.5,1],
         translateY: [10, 0],
         duration: 600,
         easing: "easeOutCubic"
