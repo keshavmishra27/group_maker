@@ -1,10 +1,22 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# DATABASE_URL = "postgresql://postgres:kshu086@localhost/tech_society"# here in teh end mention db not server name
-#above one is for localhost
-DATABASE_URL="postgresql://postgres:kshumayak086@db.vwmssqfdfovwxzydxvwv.supabase.co:5432/postgres"
+load_dotenv()
+
+# Set DATABASE_URL in your .env (local) or Render env vars (production).
+# Falls back to a local SQLite file if the variable is missing.
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///./group_maker.db",   # safe local fallback
+)
+
+# Render's Postgres URLs start with "postgres://" — SQLAlchemy needs "postgresql://"
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
