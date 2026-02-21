@@ -22,6 +22,7 @@ all_by_domain     = solara.reactive([])         # [{domain_name, members:[...]},
 # Add-member form
 name_input        = solara.reactive("")
 category_input    = solara.reactive("")
+new_member_domains= solara.reactive([])    # list of domain IDs chosen for new member
 status_msg        = solara.reactive("")
 loading           = solara.reactive(False)
 
@@ -85,18 +86,25 @@ def add_member():
         return
     loading.set(True)
     try:
-        r = requests.post(
-            f"{API}/members/",
-            params={"name": name_input.value.strip(), "category": category_input.value.strip()},
-            timeout=5,
-        )
+        body = {
+            "name": name_input.value.strip(),
+            "category": category_input.value.strip(),
+            "domain_ids": new_member_domains.value,
+        }
+        r = requests.post(f"{API}/members/", json=body, timeout=5)
         if r.status_code == 200:
-            status_msg.set(f"✅ '{name_input.value}' added!")
+            d = r.json()
+            domain_names = ", ".join(x["name"] for x in d.get("domains", []))
+            msg = f"✅ '{d['name']}' added!"
+            if domain_names:
+                msg += f" Domains: {domain_names}"
+            status_msg.set(msg)
             name_input.set("")
             category_input.set("")
+            new_member_domains.set([])
             refresh()
         else:
-            status_msg.set(f"❌ {r.text}")
+            status_msg.set(f"❌ {r.json().get('detail', r.text)}")
     except Exception as e:
         status_msg.set(f"❌ {e}")
     finally:
@@ -224,11 +232,36 @@ def Page():
                     value=category_input,
                     style="flex:1;",
                 )
+
+            # Domain selection
+            if domains.value:
+                solara.Text("Assign to Domain(s):", style="font-weight:600; font-size:13px; margin-top:8px;")
+                with solara.Div(style="display:flex; flex-wrap:wrap; gap:6px; margin:6px 0;"):
+                    for d in domains.value:
+                        is_sel = d["id"] in new_member_domains.value
+                        def toggle(dom=d):
+                            cur = list(new_member_domains.value)
+                            if dom["id"] in cur:
+                                cur.remove(dom["id"])
+                            else:
+                                cur.append(dom["id"])
+                            new_member_domains.set(cur)
+                        solara.Button(
+                            ("✓ " if is_sel else "") + d["name"],
+                            on_click=toggle,
+                            color="primary" if is_sel else "default",
+                            outlined=not is_sel,
+                            small=True,
+                        )
+            else:
+                solara.Text("No domains available yet.", style="color:#aaa; font-size:12px;")
+
             solara.Button(
                 "Add Member",
                 color="primary",
                 on_click=add_member,
                 disabled=loading.value,
+                style="margin-top:8px;",
             )
 
         if status_msg.value:

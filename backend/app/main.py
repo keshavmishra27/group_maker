@@ -1,8 +1,12 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-from backend.app.routers import members, calling
+from backend.app.routers import members, assessment
 from fastapi.middleware.cors import CORSMiddleware 
+
+from backend.app.database import engine
+from backend.app import models
+
+# Auto-create any new tables (e.g. assessment_sessions) on startup
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -21,11 +25,5 @@ app.add_middleware(
     allow_headers=["*"],        # Allows all headers
 )
 app.include_router(members.router)
-app.include_router(calling.router)
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-FRONTEND_DIR = BASE_DIR / "frontend"
-
-app.mount("/ui", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+app.include_router(assessment.router)
 

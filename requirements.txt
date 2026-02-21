@@ -7,5 +7,9 @@ pydantic
 python-dotenv
 requests
 
+# AI / CrewAI
+crewai
+langchain-google-genai
+
 # Solara frontend
 solara

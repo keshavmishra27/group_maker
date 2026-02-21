@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from backend.app.database import get_db
 from backend.app.models import Member, Domain
-from backend.app.schemas import MemberBulkCreate
+from backend.app.schemas import MemberBulkCreate, MemberCreateWithDomains
 router = APIRouter(prefix="/members", tags=["Members"])
 
 
@@ -61,15 +61,31 @@ def get_members(domain_id: Optional[int] = Query(None), db: Session = Depends(ge
         ]
 
 @router.post("/")
-def create_member(name: str, category: str, db: Session = Depends(get_db)):
-    member = Member(name=name, category=category)
+def create_member(payload: MemberCreateWithDomains, db: Session = Depends(get_db)):
+    """
+    Create a new member and optionally assign them to one or more domains.
+    Pass domain_ids as a list of existing Domain IDs.
+    """
+    member = Member(name=payload.name, category=payload.category)
     db.add(member)
+    db.flush()  # get member.id before commit
+
+    # Assign to domains
+    if payload.domain_ids:
+        domains = db.query(Domain).filter(Domain.id.in_(payload.domain_ids)).all()
+        if len(domains) != len(payload.domain_ids):
+            found_ids = {d.id for d in domains}
+            missing = [i for i in payload.domain_ids if i not in found_ids]
+            raise HTTPException(status_code=404, detail=f"Domain IDs not found: {missing}")
+        member.domains.extend(domains)
+
     db.commit()
     db.refresh(member)
     return {
         "id": member.id,
         "name": member.name,
-        "category": member.category
+        "category": member.category,
+        "domains": [{"id": d.id, "name": d.name} for d in member.domains],
     }
 
 @router.post("/bulk")
